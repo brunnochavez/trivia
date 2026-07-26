@@ -6,9 +6,11 @@ import com.bruno.trivia.repositories.ProductRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,20 +29,24 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Page<ProductResponseDTO> findAll(Pageable pageable){
-        Page<ProductResponseDTO> listProducts = productRepository.findAll(pageable)
+        Page<ProductResponseDTO> pageProducts = productRepository.findAll(pageable)
                 .map(p -> toResponseDto(p));
 
-        return listProducts;
+        return pageProducts;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDTO> findAvailable(Pageable pageable){
+        Page<ProductResponseDTO> pageProducts = productRepository.findByActiveTrue(pageable)
+                .map(p -> toResponseDto(p));
+        return pageProducts;
     }
 
     @Transactional
     public ProductResponseDTO insert(ProductRequestDTO dto){
-
-
         if(dto.barcode() != null && productRepository.existsByBarcode(dto.barcode())){
             throw new EntityExistsException("Já existe um produto com este mesmo código de barras!");
         }
-
         Product product = toProduct(dto);
         product = productRepository.save(product);
         return toResponseDto(product);
@@ -60,6 +66,15 @@ public class ProductService {
         dtoToEntity(dto, product);
         product = productRepository.save(product);
         return toResponseDto(product);
+    }
+
+    @Transactional
+    public void deleteById(Long id){
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Produto não encontrado!")
+        );
+
+        productRepository.delete(product);
     }
 
     private ProductResponseDTO toResponseDto(Product product){

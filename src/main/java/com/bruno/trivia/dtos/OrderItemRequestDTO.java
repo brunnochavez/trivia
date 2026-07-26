@@ -8,6 +8,7 @@ public record OrderItemRequestDTO(
         Long productId,
 
         @Positive(message = "Quantidade do produto não pode ser zero ou negativa")
+        @NotNull(message = "Quantidade é obrigatória!")
         Integer quantity,
 
         String observation

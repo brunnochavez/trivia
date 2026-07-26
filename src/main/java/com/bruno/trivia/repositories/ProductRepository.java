@@ -13,5 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByBarcodeAndIdNot(String barcode, Long id);
 
     @EntityGraph(attributePaths = "ingredients")
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findByActiveTrue(Pageable pageable);
+
 }

@@ -21,7 +21,7 @@ public class Product {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(unique = true, length = 20)
+    @Column(length = 20)
     private String barcode;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -34,6 +34,7 @@ public class Product {
     private Integer stockQuantity;
 
     @ElementCollection
+    @BatchSize(size = 20)
     private List<String> ingredients = new ArrayList<>();
 
     private boolean active;
@@ -52,7 +53,6 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<OrderItem> orderItems = new HashSet<>();
 
-    @Builder
     public Product(String name, String barcode, BigDecimal costPrice, BigDecimal salePrice, Integer stockQuantity,
                    List<String> ingredients, boolean active) {
         this.name = name;
@@ -60,7 +60,7 @@ public class Product {
         this.costPrice = costPrice;
         this.salePrice = salePrice;
         this.stockQuantity = stockQuantity;
-        this.ingredients = ingredients;
+        this.ingredients = ingredients != null ? ingredients : new ArrayList<>();
         this.active = active;
     }
 

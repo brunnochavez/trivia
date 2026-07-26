@@ -23,7 +23,7 @@ public class Neighborhood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 150, unique = true)
+    @Column(nullable = false, length = 150)
     private String name;
 
     @Column(precision = 10, scale = 2, nullable = false)
