@@ -1,16 +1,10 @@
 package com.bruno.trivia.entities;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "product_tb")
@@ -27,7 +21,7 @@ public class Product {
     @Column(nullable = false, length = 150)
     private String name;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(unique = true, length = 20)
     private String barcode;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -40,7 +34,7 @@ public class Product {
     private Integer stockQuantity;
 
     @ElementCollection
-    private List<String> ingredients;
+    private List<String> ingredients = new ArrayList<>();
 
     private boolean active;
 
@@ -58,12 +52,24 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<OrderItem> orderItems = new HashSet<>();
 
+    @Builder
+    public Product(String name, String barcode, BigDecimal costPrice, BigDecimal salePrice, Integer stockQuantity,
+                   List<String> ingredients, boolean active) {
+        this.name = name;
+        this.barcode = barcode;
+        this.costPrice = costPrice;
+        this.salePrice = salePrice;
+        this.stockQuantity = stockQuantity;
+        this.ingredients = ingredients;
+        this.active = active;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product)) return false;
         Product product = (Product) o;
-        return barcode != null && Objects.equals(barcode, product.getBarcode());
+        return id != null && Objects.equals(id, product.getId());
     }
 
     @Override

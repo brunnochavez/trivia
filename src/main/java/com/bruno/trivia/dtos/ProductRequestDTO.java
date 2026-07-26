@@ -11,7 +11,6 @@ public record ProductRequestDTO(
         @NotBlank(message = "Nome é obrigatório")
         String name,
 
-        @NotBlank(message = "Código de barras é obrigatório")
         String barcode,
 
         @Positive(message = "O preço de custo não pode ser negativo")
@@ -27,6 +26,7 @@ public record ProductRequestDTO(
         Integer stockQuantity,
 
         List<String> ingredients,
+
         boolean active
 ) {
 }
