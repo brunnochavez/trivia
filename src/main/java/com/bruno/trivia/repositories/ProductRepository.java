@@ -7,12 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
     boolean existsByBarcode(String barcode);
-
     boolean existsByBarcodeAndIdNot(String barcode, Long id);
-
-    @EntityGraph(attributePaths = "ingredients")
     Page<Product> findByActiveTrue(Pageable pageable);
-
 }

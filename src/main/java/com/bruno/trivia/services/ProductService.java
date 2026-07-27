@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -85,7 +87,7 @@ public class ProductService {
                 product.getCostPrice(),
                 product.getSalePrice(),
                 product.getStockQuantity(),
-                product.getIngredients(),
+                new ArrayList<>(product.getIngredients()),
                 product.isActive(),
                 product.getCreatedAt(),
                 product.getUpdatedAt()

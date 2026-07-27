@@ -4,6 +4,7 @@ import com.bruno.trivia.dtos.ProductResponseDTO;
 import com.bruno.trivia.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +26,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDTO>> findAll(Pageable pageable){
+    public ResponseEntity<Page<ProductResponseDTO>> findAll(@ParameterObject Pageable pageable){
         Page<ProductResponseDTO> pageProducts = productService.findAll(pageable);
         return ResponseEntity.ok(pageProducts);
     }
 
     @GetMapping(path = "/available")
-    public ResponseEntity<Page<ProductResponseDTO>> findAvailable(Pageable pageable){
+    public ResponseEntity<Page<ProductResponseDTO>> findAvailable(@ParameterObject Pageable pageable){
         Page<ProductResponseDTO> pageProducts = productService.findAvailable(pageable);
         return ResponseEntity.ok(pageProducts);
     }
