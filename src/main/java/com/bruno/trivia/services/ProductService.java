@@ -6,13 +6,10 @@ import com.bruno.trivia.repositories.ProductRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 
 @Service
@@ -56,7 +53,6 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDTO update(Long id, ProductRequestDTO dto){
-
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Produto não encontrado!")
         );
@@ -75,7 +71,6 @@ public class ProductService {
         Product product = productRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Produto não encontrado!")
         );
-
         productRepository.delete(product);
     }
 

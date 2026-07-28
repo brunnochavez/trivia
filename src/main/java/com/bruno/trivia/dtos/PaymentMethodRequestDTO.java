@@ -14,4 +14,7 @@ public record PaymentMethodRequestDTO(
         @PositiveOrZero(message = "Taxa não pode ser negativa")
         BigDecimal fee
 ) {
+    public PaymentMethodRequestDTO{
+        name = name == null ? null : name.trim();
+    }
 }

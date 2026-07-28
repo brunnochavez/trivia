@@ -37,6 +37,11 @@ public class PaymentMethod {
 
     private boolean deleted;
 
+    public PaymentMethod(String name, BigDecimal fee) {
+        this.name = name;
+        this.fee = fee;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
