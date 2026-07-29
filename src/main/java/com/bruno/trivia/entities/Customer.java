@@ -36,6 +36,11 @@ public class Customer {
 
     private boolean deleted;
 
+    public Customer(String name, String phone) {
+        this.name = name;
+        this.phone = phone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

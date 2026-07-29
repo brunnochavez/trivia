@@ -9,4 +9,8 @@ public record CustomerRequestDTO(
         @NotBlank(message = "Telefone é obrigatório")
         String phone
 ) {
+    public CustomerRequestDTO{
+        name = name == null ? null : name.trim();
+        phone = phone == null ? null : phone.trim();
+    }
 }
