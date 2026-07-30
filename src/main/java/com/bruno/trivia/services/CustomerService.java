@@ -33,19 +33,19 @@ public class CustomerService {
     }
 
     @Transactional
-    public CustomerResponseDTO createOrUpdate(CustomerRequestDTO dto){
+    public Customer createOrUpdate(CustomerRequestDTO dto){
         Optional<Customer> exist = customerRepository.findByPhone(dto.phone());
 
         if(exist.isPresent()){
             Customer customer = exist.get();
             dtoToEntity(dto, customer);
             customer = customerRepository.save(customer);
-            return toResponse(customer);
+            return customer;
         }
         else {
             Customer customer = toCustomer(dto);
             customer = customerRepository.save(customer);
-            return toResponse(customer);
+            return customer;
         }
     }
 
