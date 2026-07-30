@@ -37,6 +37,11 @@ public class Neighborhood {
 
     private boolean deleted;
 
+    public Neighborhood(String name, BigDecimal deliveryFee) {
+        this.name = name;
+        this.deliveryFee = deliveryFee;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

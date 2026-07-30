@@ -13,4 +13,7 @@ public record NeighborhoodRequestDTO(
         @NotNull
         BigDecimal deliveryFee
 ) {
+    public NeighborhoodRequestDTO{
+        name = name == null ? null : name.trim();
+    }
 }

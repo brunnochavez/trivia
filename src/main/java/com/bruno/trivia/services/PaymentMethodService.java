@@ -70,9 +70,7 @@ public class PaymentMethodService {
         return new PaymentMethodResponseDTO(
                 paymentMethod.getId(),
                 paymentMethod.getName(),
-                paymentMethod.getFee(),
-                paymentMethod.getCreatedAt(),
-                paymentMethod.getUpdatedAt()
+                paymentMethod.getFee()
         );
     }
 
