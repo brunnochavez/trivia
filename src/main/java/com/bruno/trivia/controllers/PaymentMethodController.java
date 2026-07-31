@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(path = "payment-methods")
+@RequestMapping(path = "/payment-methods")
 @RequiredArgsConstructor
 public class PaymentMethodController {
 
