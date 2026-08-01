@@ -10,6 +10,7 @@ public record OrderResponseDTO(
         Long id,
         CustomerResponseDTO customer,
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         OrderStatus status,
         BigDecimal deliveryFee,
         BigDecimal totalAmount,

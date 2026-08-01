@@ -29,4 +29,8 @@ public record ProductRequestDTO(
 
         boolean active
 ) {
+    public ProductRequestDTO{
+        name = name == null ? null : name.trim();
+        barcode = barcode == null ? null : barcode.trim();
+    }
 }

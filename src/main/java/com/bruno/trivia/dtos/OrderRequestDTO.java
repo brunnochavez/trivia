@@ -21,8 +21,8 @@ public record OrderRequestDTO(
         @Valid
         DeliveryAddressRequestDTO delivery,
 
-        @Valid
         @NotEmpty(message = "Insira pelo menos um produto")
+        @Valid
         List<OrderItemRequestDTO> items
 ) {
 }

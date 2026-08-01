@@ -1,7 +1,7 @@
 package com.bruno.trivia.exceptions;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,10 +58,9 @@ public class GlobalExceptionHandler {
                 Instant.now(),
                 status.value(),
                 status.getReasonPhrase(),
-                "O produto foi alterado ou atualizado por outro usuário. Recarregue os dados novamente!",
+                "O registro foi alterado ou atualizado por outro usuário. Recarregue os dados novamente!",
                 request.getRequestURI()
         );
-
         return ResponseEntity.status(status).body(dto);
     }
 
@@ -76,7 +75,35 @@ public class GlobalExceptionHandler {
                 "Erro interno. Tente novamente!",
                 request.getRequestURI()
         );
+        return ResponseEntity.status(status).body(dto);
+    }
 
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<StandardErrorDTO> handleEntityExists(EntityExistsException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardErrorDTO dto = new StandardErrorDTO(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(dto);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<StandardErrorDTO> handleIllegalArgument(IllegalArgumentException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        StandardErrorDTO dto = new StandardErrorDTO(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                e.getMessage(),
+                request.getRequestURI()
+
+        );
         return ResponseEntity.status(status).body(dto);
     }
 

@@ -69,6 +69,15 @@ public class Order {
         item.setOrder(null);
     }
 
+    public Order(OrderType orderType, DeliveryAddress deliveryAddress,
+                 Neighborhood neighborhood, Customer customer, PaymentMethod paymentMethod) {
+        this.status = OrderStatus.RECEIVED;
+        this.orderType = orderType;
+        this.deliveryAddress = deliveryAddress;
+        this.neighborhood = neighborhood;
+        this.customer = customer;
+        this.paymentMethod = paymentMethod;
+    }
 
     @Override
     public boolean equals(Object o) {

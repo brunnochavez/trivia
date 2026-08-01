@@ -17,4 +17,12 @@ public record DeliveryAddressRequestDTO(
         String complement,
         String referencePoint
 ) {
+    public DeliveryAddressRequestDTO{
+        street = street == null ? null : street.trim();
+        number = number ==  null ? null : number.trim();
+        complement = complement == null ? null: complement.trim();
+        referencePoint = referencePoint == null ? null : referencePoint.trim();
+    }
+
+
 }

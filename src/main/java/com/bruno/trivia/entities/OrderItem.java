@@ -33,6 +33,13 @@ public class OrderItem {
     @JoinColumn(nullable = false, name = "order_id")
     private Order order;
 
+    public OrderItem(Integer quantity, BigDecimal salePrice, String observation, Product product) {
+        this.quantity = quantity;
+        this.salePrice = salePrice;
+        this.observation = observation;
+        this.product = product;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
