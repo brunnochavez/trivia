@@ -1,14 +1,14 @@
 package com.bruno.trivia.exceptions;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.action.internal.EntityActionVetoException;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,4 +49,36 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(status).body(dto);
     }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<StandardErrorDTO> handleOptimisticLockingFailure(OptimisticLockingFailureException e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        StandardErrorDTO dto = new StandardErrorDTO(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                "O produto foi alterado ou atualizado por outro usuário. Recarregue os dados novamente!",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(dto);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardErrorDTO> handleException(Exception e, HttpServletRequest request){
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        StandardErrorDTO dto = new StandardErrorDTO(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                "Erro interno. Tente novamente!",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(status).body(dto);
+    }
+
+
 }
