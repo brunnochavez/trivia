@@ -7,10 +7,10 @@ import com.bruno.trivia.repositories.PaymentMethodRepository;
 import com.bruno.trivia.repositories.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.print.DocFlavor;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -23,6 +23,22 @@ public class OrderService {
     private final PaymentMethodRepository paymentMethodRepository;
     private final NeighborhoodRepository neighborhoodRepository;
     private final ProductRepository productRepository;
+
+    @Transactional(readOnly = true)
+    public OrderResponseDTO findById(Long id){
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Pedido não encontrado!")
+        );
+
+        return toResponseDto(order);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<OrderResponseDTO> findAll(Pageable pageable){
+        Page<OrderResponseDTO> responseDTOPage = orderRepository.findAll(pageable)
+                .map(o -> toResponseDto(o));
+        return responseDTOPage;
+    }
 
 
     @Transactional
@@ -61,12 +77,12 @@ public class OrderService {
         BigDecimal deliveryFee = (neighborhood != null) ? neighborhood.getDeliveryFee() : BigDecimal.ZERO;
 
         for(OrderItemRequestDTO itemDto : dto.items()){
-            Product product = productRepository.findById(itemDto.productId()).orElseThrow(
+            Product product = productRepository.findByIdAndActiveTrue(itemDto.productId()).orElseThrow(
                     () -> new EntityNotFoundException("Produto não encontrado!")
             );
 
             if(product.getStockQuantity() < itemDto.quantity()){
-                throw new IllegalArgumentException("Estoque insuficiente do produtos");
+                throw new IllegalArgumentException(product.getName() + " com estoque insuficiente!");
             }
 
             product.setStockQuantity(product.getStockQuantity() - itemDto.quantity());
@@ -93,6 +109,33 @@ public class OrderService {
 
         orderRepository.save(order);
 
+        return toResponseDto(order);
+    }
+
+    @Transactional
+    public OrderResponseDTO updateStatus(Long id, OrderStatusRequestDTO dto){
+        if(dto.status() == OrderStatus.CANCELED){
+            throw new IllegalArgumentException("O pedido já foi cancelado anteriormente!");
+        }
+
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Pedido não encontrado!")
+        );
+
+        validateStatusTransition(order.getStatus(), dto.status());
+        order.setStatus(dto.status());
+        order = orderRepository.save(order);
+        return toResponseDto(order);
+    }
+
+    @Transactional
+    public OrderResponseDTO cancel(Long id){
+        Order order = orderRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Pedido não encontrado!")
+        );
+
+        order.setStatus(OrderStatus.CANCELED);
+        order = orderRepository.save(order);
         return toResponseDto(order);
     }
 
@@ -139,5 +182,17 @@ public class OrderService {
         );
     }
 
+    private void validateStatusTransition(OrderStatus current, OrderStatus requested) {
+        boolean valid = switch (current) {
+            case RECEIVED -> requested == OrderStatus.PREPARING;
+            case PREPARING -> requested == OrderStatus.READY;
+            case READY -> requested == OrderStatus.COMPLETED;
+            case COMPLETED, CANCELED -> false;
+        };
 
+        if (!valid) {
+            throw new IllegalArgumentException("Transição de status inválida: " + current + " -> " + requested);
+        }
+
+    }
 }
